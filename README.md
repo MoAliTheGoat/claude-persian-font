@@ -59,13 +59,25 @@ MoAliTheGoat/claude-persian-font
 
 Claude در فهرست فونت‌هایش، پیش از فونت‌های مک که فارسی را زشت نشان می‌دهند، اسم چند فونت ویندوزی را آورده است که روی مک نیستند. این افزونه یک نسخه از فونت انتخابی‌ات را، فقط با حروف فارسی، به همان اسم‌ها روی مک نصب می‌کند. این فایل‌ها در `~/Library/Fonts` با اسم `*ClaudeFa*` ذخیره می‌شوند. خودِ برنامه‌ی Claude دست نمی‌خورد.
 
+## ویندوز (فقط متنِ جواب‌های Claude)
+
+روی ویندوز فقط **متن جواب‌های Claude** را می‌شود با وزیرمتن نشان داد. منوها و پیام‌های خودت با فونت ویندوز (Segoe UI) می‌مانند، چون Claude آن فونت را پیش از هر فونت دیگری برمی‌دارد و ویندوز هم حروف فارسی دارد. این روش روی ویندوز امتحان نشده است؛ همان سازوکاری است که روی مک کار می‌کند.
+
+در PowerShell (بدون نیاز به دسترسی ادمین):
+
+```powershell
+irm https://raw.githubusercontent.com/MoAliTheGoat/claude-persian-font/main/windows/install.ps1 | iex
+```
+
+بعد Claude را کامل ببند (از آیکون کنار ساعت هم) و دوباره باز کن. اگر در تنظیمات Claude فونت جواب‌ها (Response font) را عوض کرده‌ای، روی پیش‌فرض بگذار. برای برگرداندن، `windows/uninstall.ps1` را به همین شکل اجرا کن.
+
 ## محدودیت‌ها و ایرادهای شناخته‌شده
 
 - **با هر بار عوض کردن فونت، Claude یک بار بسته و باز می‌شود.** Claude فونت‌ها را فقط موقع باز شدن می‌خواند و تا دوباره باز نشود، فونت قبلی را نگه می‌دارد. افزونه این کار را خودکار انجام می‌دهد و گفتگوها سر جایشان می‌مانند، ولی چند ثانیه طول می‌کشد.
 - **فونت‌ها در منوی خودِ Claude (Settings → Appearance → Interface font) نمی‌آیند.** آن منو مال خودِ Claude است و راهی برای افزودن گزینه به آن نیست. تنها راه، ساختن نسخه‌ی تغییریافته از خودِ برنامه است. آن راه را امتحان کردیم و کار هم کرد، اما امضای Anthropic از بین می‌رفت. نتیجه این می‌شد که مک بار اول رمز می‌خواست و به‌روزرسانیِ خودکار هم از کار می‌افتاد. برای همین کنار گذاشته شد.
 - **دکمه‌ی فونت فقط بالای جعبه‌ی پیام می‌تواند باشد.** کادر دورش را خودِ Claude می‌کشد و نمی‌شود کوچک‌ترش کرد یا جای دیگری، مثلاً کنار میکروفون یا نوار بالا، گذاشتش.
 - **اسم‌های قرضی:** فونت فارسی با اسم دو فونت ویندوزی («Segoe UI» و «Noto Sans Hebrew») روی مک نصب می‌شود. اگر سایتی در کروم یا سافاری همین اسم‌ها را بخواهد، حروف فارسی‌اش هم با فونت تو نشان داده می‌شود. حروف انگلیسی دست نمی‌خورند.
-- **فقط مک.** روی ویندوز و لینوکس امتحان نشده است.
+- **ویندوز:** فقط جواب‌های Claude عوض می‌شوند، نه منوها و پیام‌های خودت، و روی ویندوزِ واقعی امتحان نشده است. انتخاب فونت از داخل برنامه هم روی ویندوز نیست و فقط وزیرمتن نصب می‌شود. لینوکس امتحان نشده است.
 - اگر Claude موقع بسته شدن چیزی بپرسد (مثلاً «کاری در جریان است، ببندم؟»)، باز شدنِ خودکار انجام نمی‌شود. در این حالت خودت دوباره بازش کن.
 
 ## برگرداندن
@@ -98,7 +110,7 @@ Restart Claude once. Pick a font from the small **Aa** button above the message 
 
 How: Claude's font stacks list Windows fonts ("Segoe UI", "Noto Sans Hebrew") ahead of the Mac fonts that render Persian poorly. This installs a Persian-only subset of your chosen font under those names in `~/Library/Fonts` (`*ClaudeFa*`). The app itself is not modified.
 
-Known limitations: Claude must restart for every font change (it reads fonts only at launch; the plugin restarts it for you). The fonts can't appear in Claude's own Settings → Interface font menu without patching the app, which breaks Anthropic's signature (keychain prompt, no auto-updates), so we don't. The button can only live above the message box. The borrowed names ("Segoe UI", "Noto Sans Hebrew") also affect Persian letters on websites that request those fonts. macOS only.
+Known limitations: Claude must restart for every font change (it reads fonts only at launch; the plugin restarts it for you). The fonts can't appear in Claude's own Settings → Interface font menu without patching the app, which breaks Anthropic's signature (keychain prompt, no auto-updates), so we don't. The button can only live above the message box. The borrowed names ("Segoe UI", "Noto Sans Hebrew") also affect Persian letters on websites that request those fonts. Windows: `irm https://raw.githubusercontent.com/MoAliTheGoat/claude-persian-font/main/windows/install.ps1 | iex` sets Vazirmatn for Claude's replies only (the UI keeps Segoe UI, which Windows lists first); untested on real Windows.
 
 ## License
 

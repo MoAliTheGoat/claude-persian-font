@@ -2,6 +2,10 @@
 
 The person wants the Claude desktop app on their Mac to show Persian text in a nicer font. Do this:
 
+On **Windows**: only Claude's replies can change. Run in PowerShell: `irm https://raw.githubusercontent.com/MoAliTheGoat/claude-persian-font/main/windows/install.ps1 | iex`, then have them fully quit Claude (tray icon too) and reopen it; tell them menus and their own messages stay in Windows' font. Skip the steps below.
+
+On **macOS**:
+
 1. Check it's macOS and `python3 --version` works. If python3 is missing, tell them to run `xcode-select --install` and come back.
 2. Install the plugin. In a Claude Code terminal session:
    `claude plugin marketplace add MoAliTheGoat/claude-persian-font` then `claude plugin install persian-font@claude-persian-font`
