@@ -95,11 +95,12 @@ def use(name):
             cmap = TTFont(path, lazy=True).getBestCmap() or {}
         except Exception:
             return False  # unreadable file: skip it
-        return all(cp in cmap for cp in (0x627, 0x6CC, 0x6A9))  # ا ی ک
+        # alef plus a yeh, Persian (ی) or Arabic (ي), so Arabic fonts count too
+        return 0x627 in cmap and (0x6CC in cmap or 0x64A in cmap)
 
     sources = [src for src in available[name] if has_persian(src)]
     if not sources:
-        sys.exit("%s has no Persian letters (or no readable font file); nothing changed" % name)
+        sys.exit("%s has no Persian/Arabic letters (or no readable font file); nothing changed" % name)
 
     # Build everything first, then swap, so a failure leaves the old font in place.
     work = tempfile.mkdtemp()
@@ -116,40 +117,57 @@ def use(name):
 
 
 def build(sources, out):
+    built = 0
+    for n, src in enumerate(sources):
+        try:
+            build_one(n, src, out)
+            built += 1
+        except Exception as e:  # one bad file shouldn't sink the font
+            sys.stderr.write("skipped %s: %s\n" % (os.path.basename(src), e))
+    if not built:
+        raise SystemExit("none of the font files could be converted; nothing changed")
+
+
+def build_one(n, src, out):
     from fontTools import subset
     from fontTools.ttLib import TTFont
 
-    for n, src in enumerate(sources):
-        for alias in ALIASES:
-            f = TTFont(src)
-            opts = subset.Options()
-            opts.layout_features = ["*"]
-            opts.name_IDs = ["*"]
-            opts.notdef_outline = True
-            s = subset.Subsetter(opts)
-            s.populate(unicodes=ARABIC)
-            s.subset(f)
-            # some fonts mislabel their style, so name it from the weight
-            weight = f["OS/2"].usWeightClass
-            style = f["name"].getDebugName(17) or f["name"].getDebugName(2) or "Regular"
-            ps = "%s-%s%d" % (alias.replace(" ", ""), MARK, n)
-            names = f["name"]
-            for r in list(names.names):
-                if r.nameID in (1, 2, 3, 4, 6, 16, 17):
-                    names.removeNames(nameID=r.nameID)
-            names.setName(alias, 1, 3, 1, 0x409)
-            names.setName("Bold" if weight >= 700 else "Regular", 2, 3, 1, 0x409)
-            names.setName(ps, 3, 3, 1, 0x409)
-            names.setName("%s %s %d" % (alias, style, weight), 4, 3, 1, 0x409)
-            names.setName(ps, 6, 3, 1, 0x409)
-            names.setName(alias, 16, 3, 1, 0x409)
-            names.setName("%s %d" % (style, weight), 17, 3, 1, 0x409)
-            bold = weight >= 700
-            os2 = f["OS/2"]
-            os2.fsSelection = (os2.fsSelection & ~0x61) | (0x20 if bold else 0x40)
-            f["head"].macStyle = (f["head"].macStyle & ~1) | (1 if bold else 0)
-            ext = os.path.splitext(src)[1].lower()
-            f.save(os.path.join(out, ps + ext))
+    import logging
+    logging.getLogger("fontTools").setLevel(logging.ERROR)
+    probe = TTFont(src, lazy=True)
+    if "GSUB" not in probe and "morx" in probe:
+        raise ValueError("joins letters with Apple-only tables; use an OpenType font")
+    for alias in ALIASES:
+        f = TTFont(src)
+        opts = subset.Options()
+        opts.layout_features = ["*"]
+        opts.name_IDs = ["*"]
+        opts.notdef_outline = True
+        opts.drop_tables += ["hdmx", "VDMX", "LTSH"]  # old size tables some fonts ship broken
+        s = subset.Subsetter(opts)
+        s.populate(unicodes=ARABIC)
+        s.subset(f)
+        # some fonts mislabel their style, so name it from the weight
+        weight = f["OS/2"].usWeightClass
+        style = f["name"].getDebugName(17) or f["name"].getDebugName(2) or "Regular"
+        ps = "%s-%s%d" % (alias.replace(" ", ""), MARK, n)
+        names = f["name"]
+        for r in list(names.names):
+            if r.nameID in (1, 2, 3, 4, 6, 16, 17):
+                names.removeNames(nameID=r.nameID)
+        names.setName(alias, 1, 3, 1, 0x409)
+        names.setName("Bold" if weight >= 700 else "Regular", 2, 3, 1, 0x409)
+        names.setName(ps, 3, 3, 1, 0x409)
+        names.setName("%s %s %d" % (alias, style, weight), 4, 3, 1, 0x409)
+        names.setName(ps, 6, 3, 1, 0x409)
+        names.setName(alias, 16, 3, 1, 0x409)
+        names.setName("%s %d" % (style, weight), 17, 3, 1, 0x409)
+        bold = weight >= 700
+        os2 = f["OS/2"]
+        os2.fsSelection = (os2.fsSelection & ~0x61) | (0x20 if bold else 0x40)
+        f["head"].macStyle = (f["head"].macStyle & ~1) | (1 if bold else 0)
+        ext = os.path.splitext(src)[1].lower()
+        f.save(os.path.join(out, ps + ext))
 
 
 def main(argv):

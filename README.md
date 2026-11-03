@@ -1,5 +1,7 @@
 # فونت فارسی برای Claude
 
+[العربية](README.ar.md) · [English](#english)
+
 اپ دسکتاپ Claude روی مک، متن فارسی را با فونت پیش‌فرض مک نشان می‌دهد که زیبا نیست. این افزونه فونت متن فارسی را عوض می‌کند. فونت **وزیرمتن** همراهش است و هر فونت فارسی دیگری را هم که خودت داشته باشی می‌توانی اضافه کنی.
 
 متن انگلیسی و کدها دست نمی‌خورند و فقط حروف فارسی عوض می‌شوند.
@@ -106,7 +108,7 @@ python3 "$(find ~/.claude/plugins -path '*persian-font*' -name fontswitch.py | h
 
 ## English
 
-Makes the Claude desktop app on macOS draw Persian text in a font you choose. Vazirmatn is bundled; drop your own `.ttf`/`.otf` files in `~/.claude-persian-font/fonts/<Font Name>/` to add more. Latin text and code are untouched.
+Makes the Claude desktop app on macOS draw Persian **and Arabic** (and other Arabic-script) text in a font you choose. Vazirmatn is bundled; drop your own `.ttf`/`.otf` files in `~/.claude-persian-font/fonts/<Font Name>/` to add more. Latin text and code are untouched.
 
 Install: in the desktop app, **+** → **Plugins** → **Add marketplace** → `MoAliTheGoat/claude-persian-font`, then add **persian-font**. Or in Claude Code:
 

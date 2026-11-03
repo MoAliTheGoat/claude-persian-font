@@ -1,6 +1,6 @@
 # claude-persian-font
 
-> A Claude Code plugin that makes the Claude desktop app on macOS draw Persian/Farsi text in a chosen font (Vazirmatn bundled; add your own). Latin text and code are untouched.
+> A Claude Code plugin that makes the Claude desktop app on macOS draw Persian/Farsi and Arabic (Arabic-script) text in a chosen font (Vazirmatn bundled; add your own). Latin text and code are untouched.
 
 - [Setup steps for an AI agent](AGENTS.md): install the plugin and turn on Vazirmatn for a user.
 - [README](README.md): what it does, install, known limitations (Persian and English).

@@ -1,6 +1,6 @@
 ---
 name: persian-font
-description: Change, add or remove the font the Claude desktop app uses for Persian/Farsi (and Arabic-script) text on macOS. Use when the user says Persian text looks ugly, asks to change Claude's font, wants Vazirmatn/IRANSans/Modam or another Persian font in Claude, or asks «فونت Claude را عوض کن» / «فونت فارسی».
+description: Change, add or remove the font the Claude desktop app uses for Persian/Farsi (and Arabic-script) text on macOS. Use when the user says Persian text looks ugly, asks to change Claude's font, wants Vazirmatn/IRANSans/Modam or another Persian font in Claude, or asks «فونت Claude را عوض کن» / «فونت فارسی», or in Arabic «غيّر خط Claude» / «الخط العربي في Claude» (works the same for Arabic text, Urdu and other Arabic-script languages).
 ---
 
 # Persian font for Claude desktop
