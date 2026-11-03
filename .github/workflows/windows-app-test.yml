@@ -1,0 +1,47 @@
+name: windows-app-test
+on: workflow_dispatch
+jobs:
+  app:
+    runs-on: windows-latest
+    steps:
+      - name: Install the Persian font
+        shell: powershell
+        run: irm https://raw.githubusercontent.com/MoAliTheGoat/claude-persian-font/main/windows/install.ps1 | iex
+      - name: Install Claude desktop
+        shell: powershell
+        run: |
+          $ProgressPreference = 'SilentlyContinue'
+          Invoke-WebRequest https://downloads.claude.ai/releases/win32/ClaudeSetup.exe -OutFile ClaudeSetup.exe -UseBasicParsing
+          Start-Process .\ClaudeSetup.exe -ArgumentList '--silent' -PassThru | Wait-Process -Timeout 300 -ErrorAction SilentlyContinue
+          Start-Sleep 20
+          Get-AppxPackage *Claude* | Format-List Name,Version,InstallLocation
+          Get-ChildItem "$env:LOCALAPPDATA\AnthropicClaude" -ErrorAction SilentlyContinue | Select-Object -First 5
+          Get-Process | Where-Object { $_.ProcessName -like '*claude*' } | Format-Table Id,ProcessName,Path -AutoSize
+      - name: Run Claude for 60 seconds and screenshot it
+        shell: powershell
+        run: |
+          Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+          function Shot($name) {
+            $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+            $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
+            $g = [System.Drawing.Graphics]::FromImage($bmp); $g.CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
+            $bmp.Save("$PWD\$name.png"); $g.Dispose(); $bmp.Dispose()
+          }
+          $pkg = Get-AppxPackage *Claude* | Select-Object -First 1
+          if ($pkg) {
+            $exe = Get-ChildItem $pkg.InstallLocation -Recurse -Filter claude.exe -ErrorAction SilentlyContinue | Select-Object -First 1
+            Start-Process "shell:AppsFolder\$($pkg.PackageFamilyName)!Claude" -ErrorAction SilentlyContinue
+            if (-not (Get-Process claude -ErrorAction SilentlyContinue) -and $exe) { Start-Process $exe.FullName }
+          } else {
+            $exe = Get-ChildItem "$env:LOCALAPPDATA\AnthropicClaude" -Recurse -Filter claude.exe | Select-Object -First 1
+            Start-Process $exe.FullName
+          }
+          Start-Sleep 25; Shot 'app-25s'
+          Start-Sleep 35; Shot 'app-60s'
+          $p = Get-Process claude -ErrorAction SilentlyContinue
+          "claude processes alive after 60s: $(@($p).Count)"
+          if (-not $p) { throw 'Claude is not running after 60 seconds' }
+          Get-ChildItem "$env:APPDATA\Claude\logs" -ErrorAction SilentlyContinue | ForEach-Object { "--- $($_.Name)"; Get-Content $_.FullName -Tail 15 }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: app-screens, path: '*.png' }
