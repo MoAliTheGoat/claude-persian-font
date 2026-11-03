@@ -1,0 +1,42 @@
+name: windows-test
+on: workflow_dispatch
+jobs:
+  fonts:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Fonts before install
+        shell: pwsh
+        run: |
+          cd tests/windows
+          $u = 'file:///' + ((Resolve-Path stacks.html).Path -replace '\\','/')
+          node fonts.mjs $u before
+      - name: Run the installer exactly as a user would
+        shell: powershell
+        run: |
+          irm https://raw.githubusercontent.com/MoAliTheGoat/claude-persian-font/main/windows/install.ps1 | iex
+          Get-ItemProperty 'HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Fonts' | Format-List *Hebrew*
+          Get-ChildItem "$env:LOCALAPPDATA\Microsoft\Windows\Fonts"
+      - name: Fonts after install
+        shell: pwsh
+        run: |
+          cd tests/windows
+          $u = 'file:///' + ((Resolve-Path stacks.html).Path -replace '\\','/')
+          node fonts.mjs $u after
+      - name: Uninstall
+        shell: powershell
+        run: |
+          irm https://raw.githubusercontent.com/MoAliTheGoat/claude-persian-font/main/windows/uninstall.ps1 | iex
+          if (Test-Path "$env:LOCALAPPDATA\Microsoft\Windows\Fonts\Vazirmatn-Persian.ttf") { throw 'font file still there' }
+          if ((Get-ItemProperty 'HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Fonts').'Noto Sans Hebrew (Persian, TrueType)') { throw 'registry entry still there' }
+          'uninstall clean'
+      - name: Fonts after uninstall
+        shell: pwsh
+        run: |
+          cd tests/windows
+          $u = 'file:///' + ((Resolve-Path stacks.html).Path -replace '\\','/')
+          node fonts.mjs $u uninstalled
+      - uses: actions/upload-artifact@v4
+        with: { name: screenshots, path: tests/windows/shot-*.png }
