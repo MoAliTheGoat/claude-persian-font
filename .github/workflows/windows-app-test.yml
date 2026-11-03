@@ -11,12 +11,13 @@ jobs:
         shell: powershell
         run: |
           $ProgressPreference = 'SilentlyContinue'
-          Invoke-WebRequest https://downloads.claude.ai/releases/win32/ClaudeSetup.exe -OutFile ClaudeSetup.exe -UseBasicParsing
-          Start-Process .\ClaudeSetup.exe -ArgumentList '--silent' -PassThru | Wait-Process -Timeout 300 -ErrorAction SilentlyContinue
-          Start-Sleep 20
-          Get-AppxPackage *Claude* | Format-List Name,Version,InstallLocation
-          Get-ChildItem "$env:LOCALAPPDATA\AnthropicClaude" -ErrorAction SilentlyContinue | Select-Object -First 5
-          Get-Process | Where-Object { $_.ProcessName -like '*claude*' } | Format-Table Id,ProcessName,Path -AutoSize
+          # The release list names the current full package; unpack it and run claude.exe from there.
+          $line = (Invoke-WebRequest https://downloads.claude.ai/releases/win32/x64/RELEASES -UseBasicParsing).Content.Trim().Split("`n")[-1]
+          $nupkg = ($line -split '\s+')[1]
+          "package: $nupkg"
+          Invoke-WebRequest "https://downloads.claude.ai/releases/win32/x64/$nupkg" -OutFile claude.zip -UseBasicParsing
+          Expand-Archive claude.zip -DestinationPath claude-app -Force
+          Get-ChildItem claude-app -Recurse -Filter claude.exe | Select-Object FullName
       - name: Run Claude for 60 seconds and screenshot it
         shell: powershell
         run: |
@@ -27,15 +28,8 @@ jobs:
             $g = [System.Drawing.Graphics]::FromImage($bmp); $g.CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
             $bmp.Save("$PWD\$name.png"); $g.Dispose(); $bmp.Dispose()
           }
-          $pkg = Get-AppxPackage *Claude* | Select-Object -First 1
-          if ($pkg) {
-            $exe = Get-ChildItem $pkg.InstallLocation -Recurse -Filter claude.exe -ErrorAction SilentlyContinue | Select-Object -First 1
-            Start-Process "shell:AppsFolder\$($pkg.PackageFamilyName)!Claude" -ErrorAction SilentlyContinue
-            if (-not (Get-Process claude -ErrorAction SilentlyContinue) -and $exe) { Start-Process $exe.FullName }
-          } else {
-            $exe = Get-ChildItem "$env:LOCALAPPDATA\AnthropicClaude" -Recurse -Filter claude.exe | Select-Object -First 1
-            Start-Process $exe.FullName
-          }
+          $exe = Get-ChildItem claude-app -Recurse -Filter claude.exe | Select-Object -First 1
+          Start-Process $exe.FullName
           Start-Sleep 25; Shot 'app-25s'
           Start-Sleep 35; Shot 'app-60s'
           $p = Get-Process claude -ErrorAction SilentlyContinue
