@@ -61,7 +61,7 @@ Claude در فهرست فونت‌هایش، پیش از فونت‌های مک 
 
 ## ویندوز (فقط متنِ جواب‌های Claude)
 
-روی ویندوز فقط **متن جواب‌های Claude** را می‌شود با وزیرمتن نشان داد. منوها و پیام‌های خودت با فونت ویندوز (Segoe UI) می‌مانند، چون Claude آن فونت را پیش از هر فونت دیگری برمی‌دارد و ویندوز هم حروف فارسی دارد. این روش داخل خودِ اپ Claude روی ویندوز، با حساب واقعی، آزمایش شده است: با فونت جواب سریف، جواب‌ها با وزیرمتن نشان داده شدند و پیام‌های کاربر با فونت ویندوز ماندند.
+روی ویندوز فقط **متن جواب‌های Claude** عوض می‌شود. منوها و پیام‌های خودت با فونت ویندوز (Segoe UI) می‌مانند. این را داخل خودِ اپ Claude روی ویندوز، با حساب واقعی، آزمایش کرده‌ایم.
 
 در PowerShell (بدون نیاز به دسترسی ادمین):
 
@@ -69,7 +69,15 @@ Claude در فهرست فونت‌هایش، پیش از فونت‌های مک 
 irm https://raw.githubusercontent.com/MoAliTheGoat/claude-persian-font/main/windows/install.ps1 | iex
 ```
 
-بعد Claude را کامل ببند (از آیکون کنار ساعت هم) و دوباره باز کن. **مهم:** در Claude برو به Settings → Appearance → **Response font** و گزینه‌ی سریف (Serif) را انتخاب کن؛ با گزینه‌ی پیش‌فرض، ویندوز فونت خودش را جلو می‌اندازد و چیزی عوض نمی‌شود. برای برگرداندن، `windows/uninstall.ps1` را به همین شکل اجرا کن.
+بعد:
+1. در Claude برو به Settings → Appearance → **Response font** و گزینه‌ی سریف (Serif) را انتخاب کن. با گزینه‌ی پیش‌فرض چیزی عوض نمی‌شود.
+2. Claude را کامل ببند (از آیکون کنار ساعت هم) و دوباره باز کن.
+
+برای برگرداندن، `windows/uninstall.ps1` را به همین شکل اجرا کن.
+
+**چرا روی ویندوز بیشتر از این نمی‌شود؟** Claude برای منوها و پیام‌ها اول سراغ فونت خودِ ویندوز (Segoe UI) می‌رود و آن فونت حروف فارسی دارد، پس هیچ فونت نصب‌شده‌ای نوبتش نمی‌رسد. روی مک فونت سیستم فارسی ندارد و برای همین آنجا کار می‌کند. این راه‌ها را هم روی ویندوز امتحان کردیم و هیچ‌کدام جواب نداد: نصب فونتی با اسم Segoe UI (ویندوز فونت خودش را نگه می‌دارد)، عوض کردن فونت پیام‌های ویندوز (Claude به آن نگاه نمی‌کند)، و گزینه‌های فونت داخل تنظیمات Claude (فونت‌هایشان داخل خودِ برنامه است). تنها راه‌های باقی‌مانده دستکاری خودِ برنامه است، که این پروژه انجام نمی‌دهد.
+
+**اگر همه‌چیز را فارسی می‌خواهی:** Claude را در مرورگر (کروم یا Edge) باز کن و افزونه‌ی [RTL for Claude](https://github.com/mahdigh99/rtl-for-claude) را نصب کن؛ بدون دستکاری چیزی، همه‌ی متن‌ها وزیرمتن و راست‌به‌چپ می‌شوند.
 
 ## محدودیت‌ها و ایرادهای شناخته‌شده
 
@@ -78,6 +86,7 @@ irm https://raw.githubusercontent.com/MoAliTheGoat/claude-persian-font/main/wind
 - **دکمه‌ی فونت فقط بالای جعبه‌ی پیام می‌تواند باشد.** کادر دورش را خودِ Claude می‌کشد و نمی‌شود کوچک‌ترش کرد یا جای دیگری، مثلاً کنار میکروفون یا نوار بالا، گذاشتش.
 - **اسم‌های قرضی:** فونت فارسی با اسم دو فونت ویندوزی («Segoe UI» و «Noto Sans Hebrew») روی مک نصب می‌شود. اگر سایتی در کروم یا سافاری همین اسم‌ها را بخواهد، حروف فارسی‌اش هم با فونت تو نشان داده می‌شود. حروف انگلیسی دست نمی‌خورند.
 - **ویندوز:** فقط جواب‌های Claude عوض می‌شوند، نه منوها و پیام‌های خودت و روی ویندوز به‌صورت خودکار آزمایش شده است، نه داخل خودِ اپ Claude. انتخاب فونت از داخل برنامه هم روی ویندوز نیست و فقط وزیرمتن نصب می‌شود. لینوکس امتحان نشده است.
+- **حروف مربعی یا به‌هم‌ریخته:** اگر فونت را عوض کنی ولی Claude بسته و باز نشود، Claude هنوز سراغ فایل‌های فونت قبلی می‌رود که پاک شده‌اند و حروف فارسی را مربعی نشان می‌دهد. یک بار بستن و باز کردن Claude درستش می‌کند. دکمه‌ی فونت این کار را خودش انجام می‌دهد.
 - اگر Claude موقع بسته شدن چیزی بپرسد (مثلاً «کاری در جریان است، ببندم؟»)، باز شدنِ خودکار انجام نمی‌شود. در این حالت خودت دوباره بازش کن.
 
 ## برگرداندن
@@ -110,7 +119,7 @@ Restart Claude once. Pick a font from the small **Aa** button above the message 
 
 How: Claude's font stacks list Windows fonts ("Segoe UI", "Noto Sans Hebrew") ahead of the Mac fonts that render Persian poorly. This installs a Persian-only subset of your chosen font under those names in `~/Library/Fonts` (`*ClaudeFa*`). The app itself is not modified.
 
-Known limitations: Claude must restart for every font change (it reads fonts only at launch; the plugin restarts it for you). The fonts can't appear in Claude's own Settings → Interface font menu without patching the app, which breaks Anthropic's signature (keychain prompt, no auto-updates), so we don't. The button can only live above the message box. The borrowed names ("Segoe UI", "Noto Sans Hebrew") also affect Persian letters on websites that request those fonts. Windows: `irm https://raw.githubusercontent.com/MoAliTheGoat/claude-persian-font/main/windows/install.ps1 | iex` sets Vazirmatn for Claude's replies only, and only with Settings → Appearance → Response font set to Serif (the UI keeps Segoe UI, which Windows lists first); tested inside the real Claude Windows app.
+Known limitations: Claude must restart for every font change (it reads fonts only at launch; the plugin restarts it for you). The fonts can't appear in Claude's own Settings → Interface font menu without patching the app, which breaks Anthropic's signature (keychain prompt, no auto-updates), so we don't. The button can only live above the message box. The borrowed names ("Segoe UI", "Noto Sans Hebrew") also affect Persian letters on websites that request those fonts. Windows: `irm https://raw.githubusercontent.com/MoAliTheGoat/claude-persian-font/main/windows/install.ps1 | iex` sets Vazirmatn for Claude's replies only, and only with Settings → Appearance → Response font set to Serif, and only with Settings → Appearance → Response font set to Serif (the UI keeps Segoe UI, which Windows lists first); tested inside the real Claude Windows app.
 
 ## License
 
