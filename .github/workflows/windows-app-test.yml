@@ -12,7 +12,8 @@ jobs:
         run: |
           $ProgressPreference = 'SilentlyContinue'
           # The release list names the current full package; unpack it and run claude.exe from there.
-          $line = (Invoke-WebRequest https://downloads.claude.ai/releases/win32/x64/RELEASES -UseBasicParsing).Content.Trim().Split("`n")[-1]
+          Invoke-WebRequest https://downloads.claude.ai/releases/win32/x64/RELEASES -OutFile RELEASES -UseBasicParsing
+          $line = (Get-Content RELEASES | Where-Object { $_ -match 'full\.nupkg' } | Select-Object -Last 1)
           $nupkg = ($line -split '\s+')[1]
           "package: $nupkg"
           Invoke-WebRequest "https://downloads.claude.ai/releases/win32/x64/$nupkg" -OutFile claude.zip -UseBasicParsing
