@@ -43,7 +43,7 @@ MoAliTheGoat/claude-persian-font
 
 ## استفاده
 
-بالای جعبه‌ی پیام یک دکمه‌ی کوچک **«Aa وزیرمتن»** هست. رویش بزن تا فونت‌ها باز شوند. هر کدام را انتخاب کنی، Claude چند ثانیه بسته و دوباره باز می‌شود. Claude فونت‌ها را فقط موقع باز شدن می‌خواند. فرمان `/persian-font` هم همین فهرست را باز می‌کند.
+بالای جعبه‌ی پیام یک دکمه‌ی کوچک **«Aa وزیرمتن»** هست. رویش بزن تا فونت‌ها باز شوند. هر کدام را انتخاب کنی، Claude چند ثانیه بسته و دوباره باز می‌شود. Claude فونت‌ها را فقط موقع باز شدن می‌خواند. اگر نوار را نمی‌خواهی، در فهرست باز شده **«پنهان کن»** را بزن؛ فونت انتخابی سر جایش می‌ماند. برای برگرداندن نوار، در جعبه‌ی پیام بنویس `/persian-font`.
 
 ## افزودن فونت خودت
 
@@ -94,7 +94,7 @@ Install: in the desktop app, **+** → **Plugins** → **Add marketplace** → `
 /plugin install persian-font@claude-persian-font
 ```
 
-Restart Claude once. Pick a font from the small **Aa** button above the message box; Claude restarts itself to load it.
+Restart Claude once. Pick a font from the small **Aa** button above the message box; Claude restarts itself to load it. **Hide** (پنهان کن) removes the bar and keeps your font; `/persian-font` brings it back.
 
 How: Claude's font stacks list Windows fonts ("Segoe UI", "Noto Sans Hebrew") ahead of the Mac fonts that render Persian poorly. This installs a Persian-only subset of your chosen font under those names in `~/Library/Fonts` (`*ClaudeFa*`). The app itself is not modified.
 

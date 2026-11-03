@@ -7,6 +7,7 @@ const font = atom({ plugin: 'persian-font', key: 'font' } as const, { fonts: [],
   shape: 'font-3',
 })
 const isOpen = atom({ plugin: 'persian-font', key: 'isOpen' } as const, false)
+const isHidden = atom({ plugin: 'persian-font', key: 'isHidden' } as const, false)
 
 const RESTART_JOB = 'local.claude-persian-font.restart'
 // Single quotes for the shell; a font name comes from a folder name.
@@ -31,11 +32,15 @@ export const register: Register = on => {
       }
     }
     await update($, font, () => ({ fonts, current, message: '' }))
+    const hidden = (await $.store.get('hidden')) === true
+    await update($, isHidden, () => hidden)
     await $.command.register({ name: 'persian-font', description: 'Choose the font for Persian text' })
     return next(e)
   })
 
   on('command.run', { command: 'persian-font' }, async $ => {
+    await $.store.set('hidden', false)
+    await update($, isHidden, () => false)
     await update($, isOpen, () => true)
     return { text: 'Persian fonts are open above the message box.' }
   })
@@ -44,7 +49,7 @@ export const register: Register = on => {
     if (e.props.hasSurvey) return next(e)
     const { Box, Text, Button } = $.ui.resolve(e)
     const state: FontState = await read($, font)
-    if (state.fonts.length === 0) return next(e)
+    if (state.fonts.length === 0 || (await read($, isHidden))) return next(e)
 
     // Folded: one small dim control; it opens the choices only when pressed.
     if (!(await read($, isOpen))) {
@@ -79,6 +84,19 @@ export const register: Register = on => {
       <Box flexDirection="row" gap={1} justifyContent="flex-end">
         {state.message !== '' && <Text dimColor>{state.message}</Text>}
         <Button key="close" label="✕" plain dimColor onPress={() => void update($, isOpen, () => false)} />
+        <Button
+          key="hide"
+          label="پنهان کن"
+          plain
+          dimColor
+          onPress={async () => {
+            // Hidden across restarts; /persian-font brings it back.
+            await $.store.set('hidden', true)
+            await update($, isOpen, () => false)
+            await update($, isHidden, () => true)
+            $.ui.toast('Font bar hidden. Type /persian-font to bring it back.')
+          }}
+        />
         {[...state.fonts].reverse().map(name => (
           <Button
             key={name}
