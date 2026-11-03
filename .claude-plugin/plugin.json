@@ -1,0 +1,8 @@
+{
+  "name": "persian-font",
+  "version": "1.0.0",
+  "description": "Pick the font Claude desktop uses for Persian text (Vazirmatn included, add your own)",
+  "author": { "name": "MoAliTheGoat" },
+  "license": "MIT",
+  "types": "./types/index.d.ts"
+}

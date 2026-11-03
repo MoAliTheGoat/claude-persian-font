@@ -1,0 +1,13 @@
+{
+  "name": "claude-persian-font",
+  "owner": {
+    "name": "MoAliTheGoat"
+  },
+  "plugins": [
+    {
+      "name": "persian-font",
+      "source": "./"
+    }
+  ],
+  "description": "Persian font for the Claude desktop app on macOS"
+}
