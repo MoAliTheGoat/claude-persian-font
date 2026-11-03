@@ -2,7 +2,7 @@
 
 The person wants the Claude desktop app on their Mac to show Persian text in a nicer font. Do this:
 
-On **Windows**: only Claude's replies can change. Run in PowerShell: `irm https://raw.githubusercontent.com/MoAliTheGoat/claude-persian-font/main/windows/install.ps1 | iex`, then have them fully quit Claude (tray icon too) and reopen it; tell them menus and their own messages stay in Windows' font. Skip the steps below.
+On **Windows**: only Claude's replies can change. Run in PowerShell: `irm https://raw.githubusercontent.com/MoAliTheGoat/claude-persian-font/main/windows/install.ps1 | iex`, then have them set Settings → Appearance → Response font to Serif (needed on Windows), fully quit Claude (tray icon too) and reopen it; tell them menus and their own messages stay in Windows' font. Skip the steps below.
 
 On **macOS**:
 
