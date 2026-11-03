@@ -34,6 +34,14 @@ export const register: Register = on => {
     await update($, font, () => ({ fonts, current, message: '' }))
     const hidden = (await $.store.get('hidden')) === true
     await update($, isHidden, () => hidden)
+    // The store is shared by every chat; follow it so hiding in one chat hides it in all.
+    void (async () => {
+      for (;;) {
+        await $.clock.sleep(2000)
+        const now = (await $.store.get('hidden')) === true
+        if (now !== (await read($, isHidden))) await update($, isHidden, () => now)
+      }
+    })()
     await $.command.register({ name: 'persian-font', description: 'Choose the font for Persian text' })
     return next(e)
   })
